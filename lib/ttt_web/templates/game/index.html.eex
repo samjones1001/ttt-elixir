@@ -1,21 +1,21 @@
 <%= if @board do %>
     <table>
-          <tr>
-             <td><%= Enum.at(@board, 0) %></td>
-             <td><%= Enum.at(@board, 1) %></td>
-             <td><%= Enum.at(@board, 2) %></td>
-          </tr>
-          <tr>
-             <td><%= Enum.at(@board, 3) %></td>
-             <td><%= Enum.at(@board, 4) %></td>
-             <td><%= Enum.at(@board, 5) %></td>
-          </tr>
-          <tr>
-             <td><%= Enum.at(@board, 6) %></td>
-             <td><%= Enum.at(@board, 7) %></td>
-             <td><%= Enum.at(@board, 8) %></td>
-          </tr>
-       </table>
+      <tr>
+         <td><%= Enum.at(@board, 0) %></td>
+         <td><%= Enum.at(@board, 1) %></td>
+         <td><%= Enum.at(@board, 2) %></td>
+      </tr>
+      <tr>
+         <td><%= Enum.at(@board, 3) %></td>
+         <td><%= Enum.at(@board, 4) %></td>
+         <td><%= Enum.at(@board, 5) %></td>
+      </tr>
+      <tr>
+         <td><%= Enum.at(@board, 6) %></td>
+         <td><%= Enum.at(@board, 7) %></td>
+         <td><%= Enum.at(@board, 8) %></td>
+      </tr>
+   </table>
 <% end %>
 
 <%= form_for @conn, Routes.game_path(@conn, :update), fn f -> %>

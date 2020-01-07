@@ -22,4 +22,11 @@ defmodule GameTest do
     Game.play_turn(game, "2")
     assert Game.get_board_state(game) == ["X", "O", "3", "4", "5", "6", "7", "8", "9"]
   end
+
+  test "reverts to players 1's turn after player 2", %{game: game} do
+    Game.play_turn(game, "1")
+    Game.play_turn(game, "2")
+    Game.play_turn(game, "3")
+    assert Game.get_board_state(game) == ["X", "O", "X", "4", "5", "6", "7", "8", "9"]
+  end
 end
