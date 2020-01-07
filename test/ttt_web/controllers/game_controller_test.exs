@@ -7,8 +7,8 @@ defmodule TttWeb.GameControllerTest do
     assert html_response(conn, 302) =~  "redirected"
   end
 
-  test "GET /game", %{conn: conn} do
-    conn = get(conn, "/game")
+  test "GET /game" do
+    conn = get(build_conn(), "/game")
     assert html_response(conn, 200) =~ "form"
   end
 end
