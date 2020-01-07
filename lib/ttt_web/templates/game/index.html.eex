@@ -1,5 +1,5 @@
-<%= if @move do %>
-  <%= @move %>
+<%= if @board do %>
+  <%= @board %>
 <% end %>
 
 <%= form_for @conn, Routes.game_path(@conn, :update), fn f -> %>
