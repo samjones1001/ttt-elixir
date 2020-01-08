@@ -18,7 +18,7 @@ defmodule Ttt.Game do
 
   def play_turn(pid, space) do
     Agent.update(pid, fn(state) ->
-      %{board: Board.create(state.board, space, state.current_player), current_player: set_next_player_marker(state.current_player)}
+      %{board: Board.update(state.board, space, state.current_player), current_player: set_next_player_marker(state.current_player)}
     end)
   end
 

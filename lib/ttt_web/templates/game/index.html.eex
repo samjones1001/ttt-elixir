@@ -19,12 +19,12 @@
 <% end %>
 
 <%= form_for @conn, Routes.game_path(@conn, :update), fn f -> %>
-  <div class="form-group">
-    <%= label f, "move", class: "control-label" %>
-    <%= text_input f, "move", class: "form-control" %>
+  <div>
+    <%= label f, "move" %>
+    <%= number_input f, "move", min: "1", max: "9" %>
   </div>
 
-  <div class="form-group">
-    <%= submit "Submit", class: "btn btn-primary" %>
+  <div>
+    <%= submit "Submit" %>
   </div>
 <% end %>

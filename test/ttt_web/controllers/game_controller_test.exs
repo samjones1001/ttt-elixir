@@ -1,8 +1,6 @@
 defmodule TttWeb.GameControllerTest do
   use TttWeb.ConnCase
 
-  alias Ttt.Game
-
   test "POST /game" do
     params = %{move: "5"}
     conn = get(build_conn(), "/")
