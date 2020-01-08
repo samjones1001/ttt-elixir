@@ -1,13 +1,15 @@
 defmodule TttWeb.GameController do
   use TttWeb, :controller
 
+  alias Ttt.Game
+
   def index(conn, _params) do
-    move = get_session(conn, :move)
-    render(conn, "index.html", move: move)
+    board = Game.get_board_state(get_session(conn, :game))
+    render(conn, "index.html", board: board)
   end
 
   def update(conn, %{"move" => move}) do
-    conn = put_session(conn, :move, move)
+    Game.play_turn(get_session(conn, :game), move)
     redirect(conn, to: "/game")
   end
 end
