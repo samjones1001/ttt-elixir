@@ -3,4 +3,4 @@ elixir:
   - '1.9'
 
 script:
-  - mix sobelow --exit
+  - mix sobelow -i Config.HTTPS --exit
