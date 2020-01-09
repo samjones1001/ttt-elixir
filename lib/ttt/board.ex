@@ -3,10 +3,6 @@ defmodule Ttt.Board do
     ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
   end
 
-  def is_full?(board) do
-    length(available_spaces(board)) == 0
-  end
-
   def update(board, space, marker) do
     List.replace_at(board, String.to_integer(space) - 1, marker)
   end
@@ -17,6 +13,10 @@ defmodule Ttt.Board do
 
   def is_available_space?(board, space) do
     Enum.member?(available_spaces(board), space)
+  end
+
+  def is_full?(board) do
+    length(available_spaces(board)) == 0
   end
 
   defp is_available_space?(space) do

@@ -21,6 +21,11 @@ defmodule Ttt.Game do
     if Board.is_available_space?(board, space), do: update_game_state(pid,space), else: set_error_message(pid)
   end
 
+  def is_game_over?(pid) do
+    board = get_board_state(pid)
+    if Board.is_full?(board), do: true, else: false
+  end
+
   defp update_game_state(pid, space) do
     Agent.update(pid, fn(state) ->
       %{board: Board.update(state.board, space, state.current_player), current_player: set_next_player_marker(state.current_player), error: nil}

@@ -62,4 +62,22 @@ defmodule GameTest do
 
     assert Game.get_error_message(game) == nil
   end
+
+  test "a game is not over if the board has not been filled", %{game: game} do
+    assert Game.is_game_over?(game) == false
+  end
+
+  test "a game is over if every space is occupied", %{game: game} do
+    Game.play_turn(game, "1")
+    Game.play_turn(game, "2")
+    Game.play_turn(game, "3")
+    Game.play_turn(game, "4")
+    Game.play_turn(game, "5")
+    Game.play_turn(game, "6")
+    Game.play_turn(game, "7")
+    Game.play_turn(game, "8")
+    Game.play_turn(game, "9")
+
+    assert Game.is_game_over?(game) == true
+  end
 end
