@@ -47,4 +47,19 @@ defmodule GameTest do
 
     assert Game.get_board_state(game) == ["X", "O", "3", "4", "5", "6", "7", "8", "9"]
   end
+
+  test "an error message is set when an invalid move is attempted", %{game: game} do
+    Game.play_turn(game, "1")
+    Game.play_turn(game, "1")
+
+    assert Game.get_error_message(game) == "Please select an available move"
+  end
+
+  test "error message is reset once a valid move is attempted", %{game: game} do
+    Game.play_turn(game, "1")
+    Game.play_turn(game, "1")
+    Game.play_turn(game, "2")
+
+    assert Game.get_error_message(game) == nil
+  end
 end
