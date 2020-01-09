@@ -4,8 +4,10 @@ defmodule TttWeb.GameController do
   alias Ttt.Game
 
   def index(conn, _params) do
-    board = Game.get_board_state(get_session(conn, :game))
-    render(conn, "index.html", board: board)
+    game = get_session(conn, :game)
+    board = Game.get_board_state(game)
+    error = Game.get_error_message(game)
+    render(conn, "index.html", board: board, error: error)
   end
 
   def update(conn, %{"move" => move}) do
