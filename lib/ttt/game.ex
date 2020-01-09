@@ -17,6 +17,14 @@ defmodule Ttt.Game do
   end
 
   def play_turn(pid, space) do
+    board = get_board_state(pid)
+    case Board.is_available_space(board, space) do
+      true -> update_game_state(pid, space)
+      false -> false
+    end
+  end
+
+  defp update_game_state(pid, space) do
     Agent.update(pid, fn(state) ->
       %{board: Board.update(state.board, space, state.current_player), current_player: set_next_player_marker(state.current_player)}
     end)
