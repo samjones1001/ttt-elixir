@@ -18,7 +18,7 @@ defmodule Ttt.Game do
 
   def play_turn(pid, space) do
     board = get_board_state(pid)
-    if Board.is_available_space(board, space), do: update_game_state(pid,space), else: set_error_message(pid)
+    if Board.is_available_space?(board, space), do: update_game_state(pid,space), else: set_error_message(pid)
   end
 
   defp update_game_state(pid, space) do

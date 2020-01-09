@@ -29,11 +29,26 @@ defmodule BoardTest do
 
   test "a space is available if it is yet to be occupied" do
     board = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
-    assert Board.is_available_space(board, "1") == true
+    assert Board.is_available_space?(board, "1") == true
   end
 
   test "a space is not available if it is occupied" do
     board = ["X", "2", "3", "4", "5", "6", "7", "8", "9"]
-    assert Board.is_available_space(board, "1") == false
+    assert Board.is_available_space?(board, "1") == false
+  end
+
+  test "a board is not full if no spaces are occupied" do
+    board = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+    assert Board.is_full?(board) == false
+  end
+
+  test "a board is not full if only some spaces are occupied" do
+    board = ["X", "X", "X", "4", "5", "6", "7", "8", "9"]
+    assert Board.is_full?(board) == false
+  end
+
+  test "a board is full if all spaces are occupied" do
+    board = ["X", "X", "X", "X", "X", "X", "X", "X", "X"]
+    assert Board.is_full?(board) == true
   end
 end
