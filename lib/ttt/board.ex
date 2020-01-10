@@ -1,4 +1,6 @@
 defmodule Ttt.Board do
+  @win_conditions [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]]
+
   def create() do
     ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
   end
@@ -17,6 +19,11 @@ defmodule Ttt.Board do
 
   def is_full?(board) do
     length(available_spaces(board)) == 0
+  end
+
+  def is_winning_line?(line) do
+    marker = List.first(line)
+    Enum.count(line, fn(element) -> element == marker end) == 3
   end
 
   defp is_available_space?(space) do

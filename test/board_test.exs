@@ -51,4 +51,24 @@ defmodule BoardTest do
     board = ["X", "X", "X", "X", "X", "X", "X", "X", "X"]
     assert Board.is_full?(board) == true
   end
+
+  test "a line does not win if no spaces are filled" do
+    line = ["1", "2", "3"]
+    assert Board.is_winning_line?(line) == false
+  end
+
+  test "a line does not win if only some spaces are filled" do
+    line = ["X", "X", "3"]
+    assert Board.is_winning_line?(line) == false
+  end
+
+  test "a line does not win if all markers do not match" do
+    line = ["X", "X", "O"]
+    assert Board.is_winning_line?(line) == false
+  end
+
+  test "a line wins if all markers match" do
+    line = ["X", "X", "X"]
+    assert Board.is_winning_line?(line) == true
+  end
 end
