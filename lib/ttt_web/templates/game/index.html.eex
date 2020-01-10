@@ -27,6 +27,6 @@
   </div>
 <% end %>
 
-<%= if @error do %>
-  <div><%= @error %></div>
+<%= if @message do %>
+  <div><%= @message %></div>
 <% end %>

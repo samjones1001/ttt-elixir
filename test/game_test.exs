@@ -52,7 +52,7 @@ defmodule GameTest do
     Game.play_turn(game, "1")
     Game.play_turn(game, "1")
 
-    assert Game.get_error_message(game) == "Please select an available move"
+    assert Game.get_message(game) == "Please select an available move"
   end
 
   test "error message is reset once a valid move is attempted", %{game: game} do
@@ -60,7 +60,7 @@ defmodule GameTest do
     Game.play_turn(game, "1")
     Game.play_turn(game, "2")
 
-    assert Game.get_error_message(game) == nil
+    assert Game.get_message(game) == nil
   end
 
   test "a game is not over if the board has not been filled", %{game: game} do
@@ -79,5 +79,19 @@ defmodule GameTest do
     Game.play_turn(game, "9")
 
     assert Game.is_game_over?(game) == true
+  end
+
+  test "a game over message is stored once every space is occupied", %{game: game} do
+    Game.play_turn(game, "1")
+    Game.play_turn(game, "2")
+    Game.play_turn(game, "3")
+    Game.play_turn(game, "4")
+    Game.play_turn(game, "5")
+    Game.play_turn(game, "6")
+    Game.play_turn(game, "7")
+    Game.play_turn(game, "8")
+    Game.play_turn(game, "9")
+
+    assert Game.get_message(game) == "Game Over!"
   end
 end

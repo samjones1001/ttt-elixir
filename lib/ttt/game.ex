@@ -4,7 +4,7 @@ defmodule Ttt.Game do
   def start() do
     Agent.start_link(fn ->
       board = Board.create()
-      %{board: board, current_player: "X", error: nil}
+      %{board: board, current_player: "X", message: nil}
     end)
   end
 
@@ -12,8 +12,8 @@ defmodule Ttt.Game do
     Agent.get(pid, fn(state) -> state.board end)
   end
 
-  def get_error_message(pid) do
-    Agent.get(pid, fn(state) -> state.error end)
+  def get_message(pid) do
+    Agent.get(pid, fn(state) -> state.message end)
   end
 
   def play_turn(pid, space) do
@@ -27,9 +27,22 @@ defmodule Ttt.Game do
   end
 
   defp update_game_state(pid, space) do
+    place_marker(pid, space)
+    check_for_game_over(pid)
+  end
+
+  defp place_marker(pid, space) do
     Agent.update(pid, fn(state) ->
-      %{board: Board.update(state.board, space, state.current_player), current_player: set_next_player_marker(state.current_player), error: nil}
+      board = Board.update(state.board, space, state.current_player)
+      %{board: board, current_player: set_next_player_marker(state.current_player), message: nil}
     end)
+  end
+
+  defp check_for_game_over(pid) do
+    case is_game_over?(pid) do
+      true -> Agent.update(pid, fn(state) -> Map.put(state, :message, "Game Over!") end)
+      false -> nil
+    end
   end
 
   defp set_next_player_marker(current_player) do
@@ -37,6 +50,6 @@ defmodule Ttt.Game do
   end
 
   defp set_error_message(pid) do
-    Agent.update(pid, fn(state) -> Map.put(state, :error, "Please select an available move") end)
+    Agent.update(pid, fn(state) -> Map.put(state, :message, "Please select an available move") end)
   end
 end
