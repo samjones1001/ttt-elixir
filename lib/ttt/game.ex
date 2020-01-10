@@ -20,6 +20,10 @@ defmodule Ttt.Game do
     Agent.get(pid, fn(state) -> state.message end)
   end
 
+  def get_game_over_status(pid) do
+    Agent.get(pid, fn(state) -> state.game_over end)
+  end
+
   def play_turn(pid, space) do
     board = get_board_state(pid)
     if Board.is_available_space?(board, space), do: update_game(pid,space), else: set_error_message(pid)
@@ -52,7 +56,7 @@ defmodule Ttt.Game do
 
   defp check_for_game_over(pid) do
     case is_game_over?(pid) do
-      true -> update_state(pid, [message: "Game Over!"])
+      true -> update_state(pid, [message: "Game Over!", game_over: true])
       false -> nil
     end
   end

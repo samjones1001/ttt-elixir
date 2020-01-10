@@ -7,7 +7,8 @@ defmodule TttWeb.GameController do
     game = get_session(conn, :game)
     board = Game.get_board_state(game)
     message = Game.get_message(game)
-    render(conn, "index.html", board: board, message: message)
+    game_over = Game.get_game_over_status(game)
+    render(conn, "index.html", board: board, message: message, game_over: game_over)
   end
 
   def update(conn, %{"move" => move}) do
