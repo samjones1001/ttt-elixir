@@ -3,16 +3,8 @@ defmodule TttWeb.GameController do
 
   alias Ttt.Game
 
-  def index(conn, _params) do
-    game = get_session(conn, :game)
-    board = Game.get_board_state(game)
-    message = Game.get_message(game)
-    game_over = Game.get_game_over_status(game)
-    render(conn, "index.html", board: board, message: message, game_over: game_over)
-  end
-
-  def update(conn, %{"move" => move}) do
-    Game.play_turn(get_session(conn, :game), move)
-    redirect(conn, to: "/game")
+  def index(conn, params) do
+    game = Game.play(Map.get(params, "move"), Map.get(params, "state"))
+    render(conn, "index.html", board: Map.get(game, :board), state: Map.get(game, :private_state), game_over: Map.get(game, :game_over), message: Map.get(game, :message))
   end
 end

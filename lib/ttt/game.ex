@@ -1,63 +1,34 @@
 defmodule Ttt.Game do
   alias Ttt.Board
 
-  def start() do
-    Agent.start_link(fn ->
-      board = Board.create()
-      %{board: board, current_player: "X", message: nil, game_over: false}
-    end)
+  def play(_move=nil, _state=nil) do
+    board = Board.create()
+    %{board: board, private_state: Jason.encode!(%{board: board, current_player: "X"})}
   end
 
-  def get_board_state(pid) do
-    Agent.get(pid, fn(state) -> state.board end)
+  def play(move, state) do
+    decoded_state = Jason.decode!(state)
+    if Board.is_available_space?(Map.get(decoded_state, "board"), move), do: update_game(decoded_state, move), else: set_error_message(decoded_state)
   end
 
-  def get_current_player(pid) do
-    Agent.get(pid, fn(state) -> state.current_player end)
-  end
-
-  def get_message(pid) do
-    Agent.get(pid, fn(state) -> state.message end)
-  end
-
-  def get_game_over_status(pid) do
-    Agent.get(pid, fn(state) -> state.game_over end)
-  end
-
-  def play_turn(pid, space) do
-    board = get_board_state(pid)
-    if Board.is_available_space?(board, space), do: update_game(pid,space), else: set_error_message(pid)
-  end
-
-  def is_game_over?(pid) do
-    board = get_board_state(pid)
+  def is_game_over?(board) do
     if Board.is_full?(board), do: true, else: false
   end
 
-  defp update_state(pid, values) do
-    Enum.map(values, fn(value) -> update_value(pid, elem(value, 0), elem(value, 1)) end)
+  defp update_game(decoded_state, space) do
+    new_board = place_marker(decoded_state, space)
+    game_over_status = check_for_game_over(new_board)
+    %{board: new_board, message: game_over_status.message, game_over: game_over_status.game_over, private_state: Jason.encode!(%{board: new_board, current_player: set_next_player_marker(Map.get(decoded_state, "current_player"))})}
   end
 
-  defp update_value(pid, key, value) do
-    Agent.update(pid, fn(state) -> Map.put(state, key, value) end)
+  defp place_marker(decoded_state, space) do
+    Board.update(Map.get(decoded_state, "board"), space, Map.get(decoded_state, "current_player"))
   end
 
-  defp update_game(pid, space) do
-    new_board = place_marker(pid, space)
-    next_player_marker = set_next_player_marker(get_current_player(pid))
-
-    update_state(pid, [board: new_board, current_player: next_player_marker, message: nil])
-    check_for_game_over(pid)
-  end
-
-  defp place_marker(pid, space) do
-    Board.update(get_board_state(pid), space, get_current_player(pid))
-  end
-
-  defp check_for_game_over(pid) do
-    case is_game_over?(pid) do
-      true -> update_state(pid, [message: "Game Over!", game_over: true])
-      false -> nil
+  defp check_for_game_over(board) do
+    case is_game_over?(board) do
+      true -> %{game_over: true, message: "Game Over!"}
+      false -> %{game_over: false, message: nil}
     end
   end
 
@@ -65,7 +36,7 @@ defmodule Ttt.Game do
     if current_player == "X", do: "O", else: "X"
   end
 
-  defp set_error_message(pid) do
-    update_state(pid, [message: "Please select an available move"])
+  defp set_error_message(decoded_state) do
+    %{board: Map.get(decoded_state, "board"), message: "Please select an available space", private_state: Jason.encode!(%{board: Map.get(decoded_state, "board"), current_player: Map.get(decoded_state, "current_player")})}
   end
 end

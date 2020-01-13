@@ -3,95 +3,80 @@ defmodule GameTest do
 
   alias Ttt.Game
 
-  setup do
-    {:ok, game} = Game.start()
-    %{game: game}
+  test "creates a new game if passed no arguments" do
+    game_state = Game.play(nil, nil)
+    assert game_state.board == ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
   end
 
-  test "begins with an empty board", %{game: game} do
-    assert Game.get_board_state(game) == ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+  test "updates the board if provided arguments" do
+    move = "1"
+    json_game_state = '{"board":["1","2","3","4","5","6","7","8","9"],"current_player":"X"}'
+
+    game_state = Game.play(move, json_game_state)
+
+    assert game_state.board == ["X", "2", "3", "4", "5", "6", "7", "8", "9"]
   end
 
-  test "playing a turn updates the board", %{game: game} do
-    Game.play_turn(game, "1")
+  test "places the correct marker dependent on current_player in the passed state" do
+    move = "1"
+    json_game_state = '{"board":["1","2","3","4","5","6","7","8","9"],"current_player":"O"}'
 
-    assert Game.get_board_state(game) == ["X", "2", "3", "4", "5", "6", "7", "8", "9"]
+    game_state = Game.play(move, json_game_state)
+
+    assert game_state.board == ["O", "2", "3", "4", "5", "6", "7", "8", "9"]
   end
 
-  test "player 2's turn follows player 1's", %{game: game} do
-    Game.play_turn(game, "1")
-    Game.play_turn(game, "2")
+  test "previously occupied spaces can not be overwritten" do
+    previous_board_state = ["X", "2", "3", "4", "5", "6", "7", "8", "9"]
+    move = "1"
+    json_game_state = '{"board":["X", "2", "3", "4", "5", "6", "7", "8", "9"] ,"current_player":"O"}'
 
-    assert Game.get_board_state(game) == ["X", "O", "3", "4", "5", "6", "7", "8", "9"]
+    game_state = Game.play(move, json_game_state)
+
+    assert game_state.board == previous_board_state
   end
 
-  test "reverts to players 1's turn after player 2", %{game: game} do
-    Game.play_turn(game, "1")
-    Game.play_turn(game, "2")
-    Game.play_turn(game, "3")
+  test "current player does not switch until a valid move has been made" do
+    json_game_state = '{"board":["X", "2", "3", "4", "5", "6", "7", "8", "9"] ,"current_player":"O"}'
 
-    assert Game.get_board_state(game) == ["X", "O", "X", "4", "5", "6", "7", "8", "9"]
+    Game.play("1", json_game_state)
+    game_state = Game.play("2", json_game_state)
+
+    assert game_state.board == ["X", "O", "3", "4", "5", "6", "7", "8", "9"]
   end
 
-  test "previously occupied spaces can not be overwritten", %{game: game} do
-    Game.play_turn(game, "1")
-    Game.play_turn(game, "1")
+  test "an error message is set when an invalid move is attempted" do
+    json_game_state = '{"board":["X", "2", "3", "4", "5", "6", "7", "8", "9"] ,"current_player":"O"}'
+    game_state = Game.play("1", json_game_state)
 
-    assert Game.get_board_state(game) == ["X", "2", "3", "4", "5", "6", "7", "8", "9"]
+    assert game_state.message == "Please select an available space"
   end
 
-  test "current player does not switch until a valid move has been made", %{game: game} do
-    Game.play_turn(game, "1")
-    Game.play_turn(game, "1")
-    Game.play_turn(game, "2")
+  test "error message is removed once a valid move is attempted" do
+    json_game_state = '{"board":["X", "2", "3", "4", "5", "6", "7", "8", "9"] ,"current_player":"O"}'
 
-    assert Game.get_board_state(game) == ["X", "O", "3", "4", "5", "6", "7", "8", "9"]
+    Game.play("1", json_game_state)
+    game_state = Game.play("2", json_game_state)
+
+    assert game_state.message == nil
   end
 
-  test "an error message is set when an invalid move is attempted", %{game: game} do
-    Game.play_turn(game, "1")
-    Game.play_turn(game, "1")
-
-    assert Game.get_message(game) == "Please select an available move"
+  test "a game is not over if the board has not been filled" do
+    board = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+    assert Game.is_game_over?(board) == false
   end
 
-  test "error message is reset once a valid move is attempted", %{game: game} do
-    Game.play_turn(game, "1")
-    Game.play_turn(game, "1")
-    Game.play_turn(game, "2")
-
-    assert Game.get_message(game) == nil
+  test "a game is over if every space is occupied" do
+    board = ["X", "O", "X", "O", "X", "O", "X", "O", "X"]
+    assert Game.is_game_over?(board) == true
   end
 
-  test "a game is not over if the board has not been filled", %{game: game} do
-    assert Game.is_game_over?(game) == false
-  end
+  test "a game over message is stored once every space is occupied" do
+    move = "9"
+    json_game_state = '{"board":["X", "O", "X", "O", "X", "O", "X", "O", "9"] ,"current_player":"X"}'
 
-  test "a game is over if every space is occupied", %{game: game} do
-    Game.play_turn(game, "1")
-    Game.play_turn(game, "2")
-    Game.play_turn(game, "3")
-    Game.play_turn(game, "4")
-    Game.play_turn(game, "5")
-    Game.play_turn(game, "6")
-    Game.play_turn(game, "7")
-    Game.play_turn(game, "8")
-    Game.play_turn(game, "9")
+    game_state = Game.play(move, json_game_state)
 
-    assert Game.is_game_over?(game) == true
-  end
-
-  test "a game over message is stored once every space is occupied", %{game: game} do
-    Game.play_turn(game, "1")
-    Game.play_turn(game, "2")
-    Game.play_turn(game, "3")
-    Game.play_turn(game, "4")
-    Game.play_turn(game, "5")
-    Game.play_turn(game, "6")
-    Game.play_turn(game, "7")
-    Game.play_turn(game, "8")
-    Game.play_turn(game, "9")
-
-    assert Game.get_message(game) == "Game Over!"
+    assert game_state.message == "Game Over!"
   end
 end
