@@ -19,7 +19,7 @@
 <%= if !@game_over do %>
   <form>
     Move: <input type="number" name="move" min="1" max="9">
-    <input type="text" name="state" value=<%= @state %>>
+    <input type="hidden" name="state" value=<%= @state %>>
     <input type="submit" value="Submit">
   </form>
 <% end %>
