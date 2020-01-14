@@ -16,17 +16,14 @@
   </tr>
 </table>
 
-<%= form_for @conn, Routes.game_path(@conn, :update), fn f -> %>
-  <div>
-    <%= label f, "move" %>
-    <%= number_input f, "move", min: "1", max: "9" %>
-  </div>
-
-  <div>
-    <%= submit "Submit" %>
-  </div>
+<%= if !@game_over do %>
+  <form>
+    Move: <input type="number" name="move" min="1" max="9">
+    <input type="hidden" name="state" value=<%= @state %>>
+    <input type="submit" value="Submit">
+  </form>
 <% end %>
 
-<%= if @error do %>
-  <div><%= @error %></div>
+<%= if @message do %>
+  <div><%= @message %></div>
 <% end %>
