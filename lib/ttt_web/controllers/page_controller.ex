@@ -2,7 +2,6 @@ defmodule TttWeb.PageController do
   use TttWeb, :controller
 
   def index(conn, _params) do
-    conn
-    |> redirect(to: "/game")
+    render(conn, "index.html")
   end
 end
