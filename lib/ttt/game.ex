@@ -13,10 +13,6 @@ defmodule Ttt.Game do
        else: set_error_message(decoded_state)
   end
 
-  def is_game_over?(board) do
-    if Board.is_full?(board), do: true, else: false
-  end
-
   defp update_game(decoded_state, space) do
     new_board = place_marker(decoded_state, space)
     game_over_status = check_for_game_over(new_board)
@@ -34,6 +30,10 @@ defmodule Ttt.Game do
       true -> %{game_over: true, message: "Game Over!"}
       false -> %{game_over: false, message: nil}
     end
+  end
+
+  defp is_game_over?(board) do
+    if Board.is_full?(board) or Board.is_won?(board), do: true, else: false
   end
 
   defp set_next_player_marker(current_player) do
@@ -55,6 +55,6 @@ defmodule Ttt.Game do
 
   defp json_state_to_map(json_state) do
     Jason.decode!(json_state)
-    |> Map.new(fn {key, value} -> {String.to_atom(key), value} end)
+    |> Map.new(fn {key, value} -> {String.to_existing_atom(key), value} end)
   end
 end
