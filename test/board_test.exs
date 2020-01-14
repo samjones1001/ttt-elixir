@@ -37,23 +37,28 @@ defmodule BoardTest do
     assert Board.is_full?(board) == true
   end
 
-  test "a line does not win if no spaces are filled" do
-    line = ["1", "2", "3"]
-    assert Board.is_winning_line?(line) == false
+  test "a game is not won if no spaces are occupied" do
+    board = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+    assert Board.is_won?(board) == false
   end
 
-  test "a line does not win if only some spaces are filled" do
-    line = ["X", "X", "3"]
-    assert Board.is_winning_line?(line) == false
+  test "a game is not won if no winning index contains three of the same marker" do
+    board = ["X", "O", "X", "O", "X", "X", "O", "X", "O"]
+    assert Board.is_won?(board) == false
   end
 
-  test "a line does not win if all markers do not match" do
-    line = ["X", "X", "O"]
-    assert Board.is_winning_line?(line) == false
+  test "a game is won if there are three matching markers on a row" do
+    board = ["X", "X", "X", "4", "5", "6", "7", "8", "9"]
+    assert Board.is_won?(board) == true
   end
 
-  test "a line wins if all markers match" do
-    line = ["X", "X", "X"]
-    assert Board.is_winning_line?(line) == true
+  test "a game is won if there are three matching markers on a column" do
+    board = ["X", "2", "3", "X", "5", "6", "X", "8", "9"]
+    assert Board.is_won?(board) == true
+  end
+
+  test "a game is won if there are three matching markers on a diagonal" do
+    board = ["X", "2", "3", "4", "X", "6", "7", "8", "X"]
+    assert Board.is_won?(board) == true
   end
 end

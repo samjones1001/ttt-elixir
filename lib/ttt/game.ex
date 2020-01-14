@@ -45,8 +45,8 @@ defmodule Ttt.Game do
   end
 
   defp update_game_state(state, new_values) do
-    new_state = %{board: state.board, private_state: Jason.encode!(state)}
-    Map.merge(new_state, new_values)
+    %{board: state.board, private_state: Jason.encode!(state)}
+    |> Map.merge(new_values)
   end
 
   defp update_private_state(board, player) do
