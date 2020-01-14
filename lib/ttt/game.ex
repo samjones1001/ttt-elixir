@@ -1,12 +1,12 @@
 defmodule Ttt.Game do
   alias Ttt.Board
 
-  def play(_move=nil, _state=nil) do
+  def play(opponent, _space=nil, _state=nil) do
     board = Board.create()
-    update_game_state(%{board: board, current_player: "X"}, %{board: board})
+    update_game_state(%{board: board, opponent: opponent, current_player: "X"}, %{board: board})
   end
 
-  def play(space, previous_state) do
+  def play(opponent=nil, space, previous_state) do
     decoded_state = json_state_to_map(previous_state)
     if Board.is_available_space?(decoded_state.board, space),
        do: update_game(decoded_state, space),
@@ -16,7 +16,7 @@ defmodule Ttt.Game do
   defp update_game(decoded_state, space) do
     new_board = place_marker(decoded_state, space)
     game_over_status = check_for_game_over(new_board)
-    new_private_state = update_private_state(new_board, set_next_player_marker(decoded_state.current_player))
+    new_private_state = update_private_state(new_board, decoded_state.opponent ,set_next_player_marker(decoded_state.current_player))
 
     update_game_state(new_private_state, %{game_over: game_over_status.game_over, message: game_over_status.message})
   end
@@ -49,8 +49,8 @@ defmodule Ttt.Game do
     |> Map.merge(new_values)
   end
 
-  defp update_private_state(board, player) do
-    %{board: board, current_player: player}
+  defp update_private_state(board, opponent, player) do
+    %{board: board, opponent: opponent, current_player: player}
   end
 
   defp json_state_to_map(json_state) do
