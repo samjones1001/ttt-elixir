@@ -20,7 +20,5 @@ pipeline :browser do
 
     get "/", PageController, :index
     get "/game", GameController, :index
-    post "/game", GameController, :update
   end
-
 end

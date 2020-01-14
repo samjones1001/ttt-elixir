@@ -1,5 +1,5 @@
 defmodule GameTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case
 
   alias Ttt.Game
 
