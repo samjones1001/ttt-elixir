@@ -9,6 +9,10 @@ defmodule Ttt.Board do
     List.replace_at(board, String.to_integer(space) - 1, marker)
   end
 
+  def available_spaces(board) do
+    Enum.filter(board, fn(space) -> is_available_space?(space) end)
+  end
+
   def is_available_space?(board, space) do
     Enum.member?(available_spaces(board), space)
   end
@@ -19,10 +23,6 @@ defmodule Ttt.Board do
 
   def is_won?(board) do
     Enum.count(check_for_winning_lines(board), fn(result) -> result == true end) > 0
-  end
-
-  def available_spaces(board) do
-    Enum.filter(board, fn(space) -> is_available_space?(space) end)
   end
 
   defp is_available_space?(space) do
