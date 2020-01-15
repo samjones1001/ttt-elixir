@@ -22,14 +22,14 @@ defmodule TttWeb.GameControllerTest do
   end
 
   test "GET /game does not update board with an invalid move" do
-    params = %{move: "1", state: '{"board":["X","2","3","4","5","6","7","8","9"],"current_player":"O"}'}
+    params = %{move: "1", state: '{"board":["X","2","3","4","5","6","7","8","9"],"current_player":"O","opponent":null}'}
     conn = get(build_conn(), "/game", params)
 
     assert html_response(conn, 200) =~ "<td>X</td>\n     <td>2</td>\n     <td>3</td>\n"
   end
 
   test "GET /game displays an error message on an invalid move" do
-    params = %{move: "1", state: '{"board":["X","2","3","4","5","6","7","8","9"],"current_player":"O"}'}
+    params = %{move: "1", state: '{"board":["X","2","3","4","5","6","7","8","9"],"current_player":"O","opponent":null}'}
     conn = get(build_conn(), "/game", params)
 
     assert html_response(conn, 200) =~ "Please select an available space"

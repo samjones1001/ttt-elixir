@@ -21,7 +21,7 @@ defmodule Ttt.Board do
     Enum.count(check_for_winning_lines(board), fn(result) -> result == true end) > 0
   end
 
-  defp available_spaces(board) do
+  def available_spaces(board) do
     Enum.filter(board, fn(space) -> is_available_space?(space) end)
   end
 

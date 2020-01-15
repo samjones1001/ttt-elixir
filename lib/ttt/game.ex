@@ -1,16 +1,24 @@
 defmodule Ttt.Game do
   alias Ttt.Board
+  alias Ttt.SimpleComputerPlayer
 
   def play(opponent, _space=nil, _state=nil) do
     board = Board.create()
     update_game_state(%{board: board, opponent: opponent, current_player: "X"}, %{board: board})
   end
 
-  def play(opponent=nil, space, previous_state) do
+  def play(_opponent=nil, space, previous_state) do
     decoded_state = json_state_to_map(previous_state)
-    if Board.is_available_space?(decoded_state.board, space),
+
+    updated_state = if Board.is_available_space?(decoded_state.board, space),
        do: update_game(decoded_state, space),
        else: set_error_message(decoded_state)
+
+      case decoded_state.opponent do
+        nil -> updated_state
+        _   -> if !is_game_over?(updated_state.board), do: update_game(json_state_to_map(updated_state.private_state), get_opponent_move(decoded_state.opponent, updated_state.board)), else: updated_state
+      end
+#    end
   end
 
   defp update_game(decoded_state, space) do
@@ -56,5 +64,12 @@ defmodule Ttt.Game do
   defp json_state_to_map(json_state) do
     Jason.decode!(json_state)
     |> Map.new(fn {key, value} -> {String.to_existing_atom(key), value} end)
+  end
+
+  defp get_opponent_move(opponent_type, board) do
+    case opponent_type do
+      "SimpleComputer" -> SimpleComputerPlayer.select_move(Board.available_spaces(board))
+      _                -> nil
+    end
   end
 end

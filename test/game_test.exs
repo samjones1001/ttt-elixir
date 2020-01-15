@@ -2,6 +2,7 @@ defmodule GameTest do
   use ExUnit.Case
 
   alias Ttt.Game
+  alias Ttt.Board
 
   describe "play" do
     test "creates a new game if passed no arguments" do
@@ -60,6 +61,14 @@ defmodule GameTest do
       game_state = Game.play(nil, "2", json_game_state)
 
       assert game_state.message == nil
+    end
+
+    test "playing a turn against a computer opponent will also cause them to take their turn" do
+      json_game_state = '{"board":["1", "2", "3", "4", "5", "6", "7", "8", "9"] ,"current_player":"X","opponent":"SimpleComputer"}'
+
+      game_state = Game.play(nil, "1", json_game_state)
+
+      assert length(Board.available_spaces(game_state.board)) == 7
     end
   end
 
