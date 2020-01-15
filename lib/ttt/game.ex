@@ -1,35 +1,37 @@
 defmodule Ttt.Game do
   alias Ttt.Board
+  alias Ttt.GameStore
   alias Ttt.SimpleComputerPlayer
 
-  def play(opponent, _space=nil, _state=nil) do
+  def play(opponent, _space=nil, _game_id=nil) do
     board = Board.create()
-    update_game_state(%{board: board, opponent: opponent, current_player: "X"}, %{board: board})
+    game_id = GameStore.start(%{board: board, opponent: opponent, current_player: "X"})
+    update_game_state(%{board: board}, %{board: board, game_id: game_id_to_string(game_id)})
   end
 
-  def play(_opponent=nil, space, previous_state) do
-    decoded_state = json_state_to_map(previous_state)
+  def play(_opponent=nil, space, game_id) do
+    previous_state = GameStore.retrieve(game_id_to_pid(game_id))
 
-    updated_state = if Board.is_available_space?(decoded_state.board, space),
-       do: update_game(decoded_state, space),
-       else: set_error_message(decoded_state)
+    updated_state = if Board.is_available_space?(previous_state.board, space),
+       do: update_game(previous_state, space, game_id_to_pid(game_id)),
+       else: set_error_message(previous_state, game_id_to_pid(game_id))
 
-    case decoded_state.opponent do
+    case previous_state.opponent do
       nil -> updated_state
-      _   -> if !is_game_over?(updated_state.board), do: update_game(json_state_to_map(updated_state.private_state), get_opponent_move(decoded_state.opponent, updated_state.board)), else: updated_state
+      _   -> if !is_game_over?(updated_state.board), do: update_game(GameStore.retrieve(game_id_to_pid(game_id)), get_opponent_move(previous_state.opponent, updated_state.board), game_id_to_pid(game_id)), else: updated_state
     end
   end
 
-  defp update_game(decoded_state, space) do
-    new_board = place_marker(decoded_state, space)
+  defp update_game(previous_state, space, game_id) do
+    new_board = place_marker(previous_state, space)
     game_over_status = check_for_game_over(new_board)
-    new_private_state = update_private_state(new_board, decoded_state.opponent ,set_next_player_marker(decoded_state.current_player))
+    update_game_store(new_board, previous_state.opponent ,set_next_player_marker(previous_state.current_player), game_id)
 
-    update_game_state(new_private_state, %{game_over: game_over_status.game_over, message: game_over_status.message})
+    update_game_state(%{board: new_board}, %{game_id: String.slice(inspect(:erlang.pid_to_list(game_id)), 2..-3), game_over: game_over_status.game_over, message: game_over_status.message})
   end
 
-  defp place_marker(decoded_state, space) do
-    Board.update(decoded_state.board, space, decoded_state.current_player)
+  defp place_marker(state, space) do
+    Board.update(state.board, space, state.current_player)
   end
 
   defp check_for_game_over(board) do
@@ -47,22 +49,25 @@ defmodule Ttt.Game do
     if current_player == "X", do: "O", else: "X"
   end
 
-  defp set_error_message(decoded_state) do
-    update_game_state(decoded_state, %{message: "Please select an available space"})
+  defp set_error_message(state, game_id) do
+    update_game_state(state, %{message: "Please select an available space", game_id: String.slice(inspect(:erlang.pid_to_list(game_id)), 2..-3)})
   end
 
   defp update_game_state(state, new_values) do
-    %{board: state.board, private_state: Jason.encode!(state)}
+    %{board: state.board}
     |> Map.merge(new_values)
   end
 
-  defp update_private_state(board, opponent, player) do
-    %{board: board, opponent: opponent, current_player: player}
+  defp update_game_store(board, opponent, player, game_id) do
+    GameStore.update(game_id ,%{board: board, opponent: opponent, current_player: player})
   end
 
-  defp json_state_to_map(json_state) do
-    Jason.decode!(json_state)
-    |> Map.new(fn {key, value} -> {String.to_existing_atom(key), value} end)
+  defp game_id_to_string(game_id) do
+    String.slice(inspect(:erlang.pid_to_list(elem(game_id, 1))), 2..-3)
+  end
+
+  def game_id_to_pid(game_id_string) do
+    :erlang.list_to_pid('<#{game_id_string}>')
   end
 
   defp get_opponent_move(opponent_type, board) do
