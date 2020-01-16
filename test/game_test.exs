@@ -72,7 +72,7 @@ defmodule GameTest do
     end
 
     test "playing a turn against a computer opponent will also cause them to take their turn" do
-      game_id = GameStore.start(%{board: ["X","2","3","4","5","6","7","8","9"],opponent: "SimpleComputer", current_player: "O"})
+      game_id = GameStore.start(%{board: ["1","2","3","4","5","6","7","8","9"],opponent: "SimpleComputer", current_player: "O"})
       game_id_string = String.slice(inspect(:erlang.pid_to_list(elem(game_id, 1))), 2..-3)
 
       game_state = Game.play(nil, "1", game_id_string)
