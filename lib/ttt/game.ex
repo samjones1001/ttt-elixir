@@ -17,35 +17,39 @@ defmodule Ttt.Game do
        do: run_turn(previous_state, space, game_id),
        else: set_error_message(previous_state, game_id)
 
-    case previous_state.opponent do
-      nil -> updated_state
-      _   -> if updated_state.message == nil,
-                do: run_turn(GameStore.retrieve(game_id), get_opponent_move(updated_state.board), game_id),
-                else: updated_state
-    end
+#    case previous_state.opponent do
+#      nil -> updated_state
+#      _   -> if updated_state.message == nil,
+#                do: run_turn(GameStore.retrieve(game_id), get_opponent_move(updated_state.board), game_id),
+#                else: updated_state
+#    end
   end
 
   defp run_turn(previous_state, space, game_id) do
     new_board = place_marker(previous_state, space)
-    game_over_status = check_for_game_over(new_board)
+    game_status = evaluate_turn_end_status(new_board, previous_state, space)
     update_game_store(%{board: new_board, opponent: previous_state.opponent, current_player: previous_state.next_player, next_player: previous_state.current_player, game_id: game_id})
 
-    %{board: new_board, game_id: game_id_to_string(game_id), game_over: game_over_status.game_over, message: game_over_status.message}
+    %{board: new_board, game_id: game_id_to_string(game_id), game_over: game_status.game_over, message: game_status.message}
   end
 
   defp place_marker(state, space) do
     Board.update(state.board, space, state.current_player)
   end
 
-  defp check_for_game_over(board) do
+  defp evaluate_turn_end_status(board, game_state, space) do
     case is_game_over?(board) do
       true -> %{game_over: true, message: "Game Over!"}
-      false -> %{game_over: false, message: nil}
+      false -> %{game_over: false, message: build_turn_end_message(game_state, space)}
     end
   end
 
   defp is_game_over?(board) do
     if Board.is_full?(board) or Board.is_won?(board), do: true, else: false
+  end
+
+  defp build_turn_end_message(game_state, space) do
+    "#{game_state.next_player}\'s turn. #{game_state.current_player} took space #{space}"
   end
 
   defp set_error_message(state, game_id) do
