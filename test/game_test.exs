@@ -108,13 +108,22 @@ defmodule GameTest do
       assert game_state.game_over == true
     end
 
-    test "a game over message is stored once the game is over" do
+    test "a game over message is stored once the game is won" do
       game_id = GameStore.start(%{board: ["X","X","3","4","5","6","7","8","9"],opponent: nil, current_player: "X", next_player: "O"})
       game_id_string = String.slice(inspect(:erlang.pid_to_list(elem(game_id, 1))), 2..-3)
 
       game_state = Game.play(nil, "3", game_id_string)
 
-      assert game_state.message == "Game Over!"
+      assert game_state.message == "Game Over - X wins!"
+    end
+
+    test "a game over message is stored once the game is tied" do
+      game_id = GameStore.start(%{board: ["X","O","X","O","O","X","X","8","O"],opponent: nil, current_player: "X", next_player: "O"})
+      game_id_string = String.slice(inspect(:erlang.pid_to_list(elem(game_id, 1))), 2..-3)
+
+      game_state = Game.play(nil, "8", game_id_string)
+
+      assert game_state.message == "Game Over - It's a Tie!"
     end
   end
 end

@@ -39,7 +39,7 @@ defmodule Ttt.Game do
 
   defp evaluate_turn_end_status(board, game_state, space) do
     case is_game_over?(board) do
-      true -> %{game_over: true, message: "Game Over!"}
+      true -> %{game_over: true, message: build_game_over_message(board, game_state)}
       false -> %{game_over: false, message: build_turn_end_message(game_state, space)}
     end
   end
@@ -50,6 +50,10 @@ defmodule Ttt.Game do
 
   defp build_turn_end_message(game_state, space) do
     "#{game_state.next_player}\'s turn. #{game_state.current_player} took space #{space}"
+  end
+
+  defp build_game_over_message(board, game_state) do
+    if Board.is_won?(board), do: "Game Over - #{game_state.current_player} wins!", else: "Game Over - It's a Tie!"
   end
 
   defp set_error_message(state, game_id) do
