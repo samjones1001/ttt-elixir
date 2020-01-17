@@ -19,7 +19,7 @@ defmodule Ttt.Game do
 
     case previous_state.opponent do
       nil -> updated_state
-      _   -> if !is_game_over?(updated_state.board) and !updated_state.error,
+      _   -> if !is_game_over?(updated_state.board, updated_state) and !updated_state.error,
                 do: run_turn(GameStore.retrieve(game_id), get_opponent_move(updated_state.board), game_id),
                 else: updated_state
     end
@@ -38,14 +38,14 @@ defmodule Ttt.Game do
   end
 
   defp evaluate_turn_end_status(board, game_state, space) do
-    case is_game_over?(board) do
+    case is_game_over?(board, game_state.current_player) do
       true -> %{game_over: true, message: build_game_over_message(board, game_state)}
       false -> %{game_over: false, message: build_turn_end_message(game_state, space)}
     end
   end
 
-  defp is_game_over?(board) do
-    if Board.is_full?(board) or Board.is_won?(board), do: true, else: false
+  defp is_game_over?(board, marker) do
+    if Board.is_full?(board) or Board.is_won?(board, marker), do: true, else: false
   end
 
   defp build_turn_end_message(game_state, space) do
@@ -53,7 +53,7 @@ defmodule Ttt.Game do
   end
 
   defp build_game_over_message(board, game_state) do
-    if Board.is_won?(board), do: "Game Over - #{game_state.current_player} wins!", else: "Game Over - It's a Tie!"
+    if Board.is_won?(board, game_state.current_player), do: "Game Over - #{game_state.current_player} wins!", else: "Game Over - It's a Tie!"
   end
 
   defp set_error_message(state, game_id) do

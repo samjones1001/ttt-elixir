@@ -45,28 +45,33 @@ defmodule BoardTest do
 
   describe "is_won?" do
     test "a game is not won if no spaces are occupied" do
+      current_player = "X"
       board = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
-      assert Board.is_won?(board) == false
+      assert Board.is_won?(board, current_player) == false
     end
 
     test "a game is not won if no winning index contains three of the same marker" do
+      current_player = "X"
       board = ["X", "O", "X", "O", "X", "X", "O", "X", "O"]
-      assert Board.is_won?(board) == false
+      assert Board.is_won?(board, current_player) == false
     end
 
     test "a game is won if there are three matching markers on a row" do
+      current_player = "X"
       board = ["X", "X", "X", "4", "5", "6", "7", "8", "9"]
-      assert Board.is_won?(board) == true
+      assert Board.is_won?(board, current_player) == true
     end
 
     test "a game is won if there are three matching markers on a column" do
+      current_player = "X"
       board = ["X", "2", "3", "X", "5", "6", "X", "8", "9"]
-      assert Board.is_won?(board) == true
+      assert Board.is_won?(board, current_player) == true
     end
 
     test "a game is won if there are three matching markers on a diagonal" do
+      current_player = "X"
       board = ["X", "2", "3", "4", "X", "6", "7", "8", "X"]
-      assert Board.is_won?(board) == true
+      assert Board.is_won?(board, current_player) == true
     end
   end
 end
