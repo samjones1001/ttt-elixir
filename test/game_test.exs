@@ -70,14 +70,14 @@ defmodule GameTest do
       assert game_state.message == "X's turn. O took space 2"
     end
 
-#    test "playing a turn against a computer opponent will also cause them to take their turn" do
-#      game_id = GameStore.start(%{board: ["1","2","3","4","5","6","7","8","9"],opponent: "SimpleComputer", current_player: "O", next_player: "X"})
-#      game_id_string = String.slice(inspect(:erlang.pid_to_list(elem(game_id, 1))), 2..-3)
-#
-#      game_state = Game.play(nil, "1", game_id_string)
-#
-#      assert length(Board.available_spaces(game_state.board)) == 7
-#    end
+    test "playing a turn against a computer opponent will also cause them to take their turn" do
+      game_id = GameStore.start(%{board: ["1","2","3","4","5","6","7","8","9"],opponent: "SimpleComputer", current_player: "O", next_player: "X"})
+      game_id_string = String.slice(inspect(:erlang.pid_to_list(elem(game_id, 1))), 2..-3)
+
+      game_state = Game.play(nil, "1", game_id_string)
+
+      assert length(Board.available_spaces(game_state.board)) == 7
+    end
   end
 
   describe "game over" do

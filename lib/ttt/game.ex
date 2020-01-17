@@ -5,7 +5,7 @@ defmodule Ttt.Game do
 
   def play(opponent, _space=nil, _game_id=nil) do
     board = Board.create()
-    game_id = GameStore.start(%{board: board, opponent: opponent, current_player: "X", next_player: "O"})
+    game_id = GameStore.start(%{board: board, opponent: opponent, current_player: "X", next_player: "O", error: false})
     %{board: board, game_id: game_id_to_string(elem(game_id, 1))}
   end
 
@@ -17,12 +17,12 @@ defmodule Ttt.Game do
        do: run_turn(previous_state, space, game_id),
        else: set_error_message(previous_state, game_id)
 
-#    case previous_state.opponent do
-#      nil -> updated_state
-#      _   -> if updated_state.message == nil,
-#                do: run_turn(GameStore.retrieve(game_id), get_opponent_move(updated_state.board), game_id),
-#                else: updated_state
-#    end
+    case previous_state.opponent do
+      nil -> updated_state
+      _   -> if !is_game_over?(updated_state.board) and !updated_state.error,
+                do: run_turn(GameStore.retrieve(game_id), get_opponent_move(updated_state.board), game_id),
+                else: updated_state
+    end
   end
 
   defp run_turn(previous_state, space, game_id) do
@@ -30,7 +30,7 @@ defmodule Ttt.Game do
     game_status = evaluate_turn_end_status(new_board, previous_state, space)
     update_game_store(%{board: new_board, opponent: previous_state.opponent, current_player: previous_state.next_player, next_player: previous_state.current_player, game_id: game_id})
 
-    %{board: new_board, game_id: game_id_to_string(game_id), game_over: game_status.game_over, message: game_status.message}
+    %{board: new_board, game_id: game_id_to_string(game_id), game_over: game_status.game_over, message: game_status.message, error: false}
   end
 
   defp place_marker(state, space) do
@@ -58,7 +58,7 @@ defmodule Ttt.Game do
 
   defp set_error_message(state, game_id) do
     state
-    |> Map.merge(%{message: "Please select an available space", game_id: game_id_to_string(game_id)})
+    |> Map.merge(%{message: "Please select an available space", error: true, game_id: game_id_to_string(game_id)})
   end
 
   defp update_game_store(state) do
