@@ -2,6 +2,7 @@ defmodule Ttt.Game do
   alias Ttt.Board
   alias Ttt.GameStore
   alias Ttt.SimpleComputerPlayer
+  alias Ttt.SmartComputerPlayer
 
   def play(opponent, _space=nil, _game_id=nil) do
     board = Board.create()
@@ -20,7 +21,7 @@ defmodule Ttt.Game do
     case previous_state.opponent do
       nil -> updated_state
       _   -> if !is_game_over?(updated_state.board, GameStore.retrieve(game_id).next_player) and !updated_state.error,
-                do: run_turn(GameStore.retrieve(game_id), get_opponent_move(updated_state.board), game_id),
+                do: run_turn(GameStore.retrieve(game_id), get_opponent_move(updated_state.board, GameStore.retrieve(game_id)), game_id),
                 else: updated_state
     end
   end
@@ -73,7 +74,10 @@ defmodule Ttt.Game do
     :erlang.list_to_pid('<#{game_id_string}>')
   end
 
-  defp get_opponent_move(board) do
-    SimpleComputerPlayer.select_move(Board.available_spaces(board))
+  defp get_opponent_move(board, game_state) do
+    case game_state.opponent do
+      "SimpleComputer" -> SimpleComputerPlayer.select_move(Board.available_spaces(board))
+      "SmartComputer" -> SmartComputerPlayer.select_move(board, game_state)
+    end
   end
 end
