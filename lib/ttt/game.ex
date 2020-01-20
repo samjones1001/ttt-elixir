@@ -19,7 +19,7 @@ defmodule Ttt.Game do
 
     case previous_state.opponent do
       nil -> updated_state
-      _   -> if !is_game_over?(updated_state.board, updated_state) and !updated_state.error,
+      _   -> if !is_game_over?(updated_state.board, GameStore.retrieve(game_id).next_player) and !updated_state.error,
                 do: run_turn(GameStore.retrieve(game_id), get_opponent_move(updated_state.board), game_id),
                 else: updated_state
     end
