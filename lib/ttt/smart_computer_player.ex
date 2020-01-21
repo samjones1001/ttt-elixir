@@ -54,7 +54,6 @@ defmodule Ttt.SmartComputerPlayer do
     end)
   end
 
-  defp next_player(game_state, marker) do
-    if marker == game_state.current_player, do: game_state.next_player, else: game_state.current_player
-  end
+  defp next_player(state = %{current_player: marker}, marker), do: state.next_player
+  defp next_player(%{current_player: p}, _marker), do: p
 end
