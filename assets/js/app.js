@@ -15,3 +15,14 @@ import "phoenix_html"
 //
 // Local files can be imported directly using relative paths, for example:
 // import socket from "./socket"
+
+window.Ttt = (function() {
+  let registerClick = function(message) {
+    document.getElementById('move_input').value = message
+    document.getElementById("play_turn_form").submit()
+  }
+
+  return {
+    registerClick : registerClick
+  }
+})();
