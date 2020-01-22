@@ -7,11 +7,11 @@ defmodule Ttt.Game do
   def play(opponent, _space=nil, _game_id=nil) do
     board = Board.create()
     game_id = GameStore.start(%{board: board, opponent: opponent, current_player: "X", next_player: "O", error: false})
-    %{board: board, game_id: game_id_to_string(elem(game_id, 1))}
+    %{board: board, game_id: elem(game_id, 1)}
   end
 
   def play(_opponent=nil, space, game_id) do
-    game_id = game_id_to_pid(game_id)
+    game_id = game_id
     previous_state = GameStore.retrieve(game_id)
 
     updated_state = if Board.is_available_space?(previous_state.board, space),
@@ -31,7 +31,7 @@ defmodule Ttt.Game do
     game_status = evaluate_turn_end_status(new_board, previous_state, space)
     update_game_store(%{board: new_board, opponent: previous_state.opponent, current_player: previous_state.next_player, next_player: previous_state.current_player, game_id: game_id})
 
-    %{board: new_board, game_id: game_id_to_string(game_id), game_over: game_status.game_over, message: game_status.message, error: false}
+    %{board: new_board, game_id: game_id, game_over: game_status.game_over, message: game_status.message, error: false}
   end
 
   defp place_marker(state, space) do
@@ -59,20 +59,20 @@ defmodule Ttt.Game do
 
   defp set_error_message(state, game_id) do
     state
-    |> Map.merge(%{message: "Please select an available space", error: true, game_id: game_id_to_string(game_id)})
+    |> Map.merge(%{message: "Please select an available space", error: true, game_id: game_id})
   end
 
   defp update_game_store(state) do
     GameStore.update(state.game_id ,%{board: state.board, opponent: state.opponent, current_player: state.current_player, next_player: state.next_player})
   end
 
-  defp game_id_to_string(game_id) do
-    String.slice(inspect(:erlang.pid_to_list(game_id)), 2..-3)
-  end
-
-  def game_id_to_pid(game_id_string) do
-    :erlang.list_to_pid('<#{game_id_string}>')
-  end
+#  defp game_id_to_string(game_id) do
+#    String.slice(inspect(:erlang.pid_to_list(game_id)), 2..-3)
+#  end
+#
+#  def game_id_to_pid(game_id_string) do
+#    :erlang.list_to_pid('<#{game_id_string}>')
+#  end
 
   defp get_opponent_move(board, game_state) do
     case game_state.opponent do

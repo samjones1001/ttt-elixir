@@ -18,7 +18,6 @@ import "phoenix_html"
 
 window.Ttt = (function() {
   let registerClick = function(message, gameOver) {
-    console.log(gameOver)
     if (!gameOver) {
       document.getElementById('move_input').value = message
       document.getElementById("play_turn_form").submit()
@@ -26,6 +25,6 @@ window.Ttt = (function() {
   }
 
   return {
-    registerClick : registerClick
+    registerClick
   }
 })();
