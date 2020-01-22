@@ -21,8 +21,8 @@ defmodule Ttt.Board do
     length(available_spaces(board)) == 0
   end
 
-  def is_won?(board) do
-    Enum.count(check_for_winning_lines(board), fn(result) -> result == true end) > 0
+  def is_won?(board, player_marker) do
+    Enum.count(check_for_winning_lines(board, player_marker), fn(result) -> result == true end) > 0
   end
 
   defp is_available_space?(space) do
@@ -32,16 +32,15 @@ defmodule Ttt.Board do
     end
   end
 
-  defp check_for_winning_lines(board) do
+  defp check_for_winning_lines(board, player_marker) do
     Enum.map(@win_conditions, fn(condition) ->
       condition
       |> get_indices(board)
-      |> is_winning_line?()
+      |> is_winning_line?(player_marker)
     end)
   end
 
-  defp is_winning_line?(line) do
-    marker = List.first(line)
+  defp is_winning_line?(line, marker) do
     Enum.count(line, fn(element) -> element == marker end) == 3
   end
 
