@@ -20,9 +20,7 @@ defmodule Ttt.Game do
 
     case previous_state.opponent do
       nil -> updated_state
-      _   -> if !is_game_over?(updated_state.board, GameStore.retrieve(game_id).next_player) and !updated_state.error,
-                do: run_turn(GameStore.retrieve(game_id), get_opponent_move(updated_state.board, GameStore.retrieve(game_id)), game_id),
-                else: updated_state
+      _   -> computer_turn(updated_state, game_id)
     end
   end
 
@@ -39,10 +37,20 @@ defmodule Ttt.Game do
   end
 
   defp evaluate_turn_end_status(board, game_state, space) do
-    case is_game_over?(board, game_state.current_player) do
-      true -> %{game_over: true, message: build_game_over_message(board, game_state)}
+    current_player = game_state.current_player
+
+    case is_game_over?(board, current_player) do
+      true -> %{game_over: true, message: build_game_over_message(board, game_state.current_player)}
       false -> %{game_over: false, message: build_turn_end_message(game_state, space)}
     end
+  end
+
+  defp computer_turn(state, game_id) do
+    stored_state = GameStore.retrieve(game_id)
+
+    if !is_game_over?(state.board, stored_state.next_player) and !state.error,
+       do: run_turn(stored_state, get_opponent_move(state.board, stored_state), game_id),
+       else: state
   end
 
   defp is_game_over?(board, marker) do
@@ -53,8 +61,8 @@ defmodule Ttt.Game do
     "#{game_state.next_player}\'s turn. #{game_state.current_player} took space #{space}"
   end
 
-  defp build_game_over_message(board, game_state) do
-    if Board.is_won?(board, game_state.current_player), do: "Game Over - #{game_state.current_player} wins!", else: "Game Over - It's a Tie!"
+  defp build_game_over_message(board, player) do
+    if Board.is_won?(board, player), do: "Game Over - #{player} wins!", else: "Game Over - It's a Tie!"
   end
 
   defp set_error_message(state, game_id) do
@@ -65,14 +73,6 @@ defmodule Ttt.Game do
   defp update_game_store(state) do
     GameStore.update(state.game_id ,%{board: state.board, opponent: state.opponent, current_player: state.current_player, next_player: state.next_player})
   end
-
-#  defp game_id_to_string(game_id) do
-#    String.slice(inspect(:erlang.pid_to_list(game_id)), 2..-3)
-#  end
-#
-#  def game_id_to_pid(game_id_string) do
-#    :erlang.list_to_pid('<#{game_id_string}>')
-#  end
 
   defp get_opponent_move(board, game_state) do
     case game_state.opponent do

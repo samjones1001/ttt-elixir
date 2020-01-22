@@ -17,7 +17,7 @@ defmodule TttWeb.GameController do
     String.slice(inspect(:erlang.pid_to_list(game_id)), 2..-3)
   end
 
-  def game_id_to_pid(game_id_string = nil) do
+  def game_id_to_pid(_game_id_string = nil) do
     nil
   end
 

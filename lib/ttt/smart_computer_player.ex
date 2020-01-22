@@ -6,7 +6,7 @@ defmodule Ttt.SmartComputerPlayer do
   end
 
   def minimax(board, game_state, marker) do
-    if Board.is_full?(board) or Board.is_won?(board, game_state.current_player) or Board.is_won?(board, game_state.next_player) do
+    if is_terminal_board(board, game_state) do
       score(board, game_state)
     else
       available_spaces = Board.available_spaces(board)
@@ -22,6 +22,10 @@ defmodule Ttt.SmartComputerPlayer do
 
       select_best_move(possible_moves, game_state, marker)
     end
+  end
+
+  defp is_terminal_board(board, game_state) do
+    Board.is_full?(board) or Board.is_won?(board, game_state.current_player) or Board.is_won?(board, game_state.next_player)
   end
 
   defp score(board, game_state) do
