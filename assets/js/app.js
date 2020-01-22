@@ -17,9 +17,12 @@ import "phoenix_html"
 // import socket from "./socket"
 
 window.Ttt = (function() {
-  let registerClick = function(message) {
-    document.getElementById('move_input').value = message
-    document.getElementById("play_turn_form").submit()
+  let registerClick = function(message, gameOver) {
+    console.log(gameOver)
+    if (!gameOver) {
+      document.getElementById('move_input').value = message
+      document.getElementById("play_turn_form").submit()
+    }
   }
 
   return {
