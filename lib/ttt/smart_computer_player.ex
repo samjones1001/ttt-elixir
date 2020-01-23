@@ -2,7 +2,7 @@ defmodule Ttt.SmartComputerPlayer do
   alias Ttt.Board
 
   def select_move(board, game_state) do
-    minimax(board, game_state, game_state.current_player).space
+    minimax(board, game_state, game_state.current_player.marker).space
   end
 
   def minimax(board, game_state, marker) do
@@ -25,20 +25,20 @@ defmodule Ttt.SmartComputerPlayer do
   end
 
   defp is_terminal_board(board, game_state) do
-    Board.is_full?(board) or Board.is_won?(board, game_state.current_player) or Board.is_won?(board, game_state.next_player)
+    Board.is_full?(board) or Board.is_won?(board, game_state.current_player.marker) or Board.is_won?(board, game_state.next_player.marker)
   end
 
   defp score(board, game_state) do
     cond do
-      Board.is_won?(board, game_state.current_player) -> %{score: 10}
-      Board.is_won?(board, game_state.next_player) -> %{score: -10}
+      Board.is_won?(board, game_state.current_player.marker) -> %{score: 10}
+      Board.is_won?(board, game_state.next_player.marker) -> %{score: -10}
       true -> %{score: 0}
     end
   end
 
   defp select_best_move(possible_moves, game_state, marker) do
-    player = game_state.current_player
-    opponent = game_state.next_player
+    player = game_state.current_player.marker
+    opponent = game_state.next_player.marker
 
     case marker do
       ^player -> maximise_score(possible_moves)
@@ -58,6 +58,6 @@ defmodule Ttt.SmartComputerPlayer do
     end)
   end
 
-  defp next_player(state = %{current_player: marker}, marker), do: state.next_player
-  defp next_player(%{current_player: p}, _marker), do: p
+  defp next_player(state = %{current_player: %{marker: marker}}, marker), do: state.next_player.marker
+  defp next_player(%{current_player: p}, _marker), do: p.marker
 end
