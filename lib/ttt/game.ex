@@ -14,12 +14,12 @@ defmodule Ttt.Game do
   def play(_player_type="Human", space, game_id) do
     previous_state = GameStore.retrieve(game_id)
 
-    updated_state = if Board.is_available_space?(previous_state.board, space),
+    if Board.is_available_space?(previous_state.board, space),
        do: run_turn(previous_state, space, game_id),
        else: set_error_message(previous_state, game_id)
   end
 
-  def play(player_type, space=nil, game_id) do
+  def play(player_type, _space=nil, game_id) do
     previous_state = GameStore.retrieve(game_id)
     run_turn(previous_state, get_opponent_move(player_type, previous_state), game_id)
   end
@@ -44,14 +44,6 @@ defmodule Ttt.Game do
       false -> %{game_over: false, message: build_turn_end_message(game_state, space)}
     end
   end
-
-#  defp computer_turn(state, game_id) do
-#    stored_state = GameStore.retrieve(game_id)
-#
-#    if !is_game_over?(state.board, stored_state.next_player.marker) and !state.error,
-#       do: run_turn(stored_state, get_opponent_move(state.board, stored_state), game_id),
-#       else: state
-#  end
 
   defp is_game_over?(board, marker) do
     if Board.is_full?(board) or Board.is_won?(board, marker), do: true, else: false
