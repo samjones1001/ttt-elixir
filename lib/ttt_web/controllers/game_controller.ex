@@ -4,12 +4,14 @@ defmodule TttWeb.GameController do
   alias Ttt.Game
 
   def index(conn, params) do
-    game = Game.play(Map.get(params, "opponent"), Map.get(params, "move"), game_id_to_pid(Map.get(params, "game_id")))
+    IO.inspect(params)
+    game = Game.play(Map.get(params, "player_type"), Map.get(params, "move"), game_id_to_pid(Map.get(params, "game_id")))
     render(conn, "index.html",
       board: Map.get(game, :board),
       game_id: game_id_to_string(Map.get(game, :game_id)),
       game_over: Map.get(game, :game_over),
-      message: Map.get(game, :message)
+      message: Map.get(game, :message),
+      player_type: Map.get(game, :player_type)
     )
   end
 
