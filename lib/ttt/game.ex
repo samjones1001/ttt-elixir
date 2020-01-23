@@ -19,7 +19,7 @@ defmodule Ttt.Game do
        else: set_error_message(previous_state, game_id)
   end
 
-  def play(player_type, _space=nil, game_id) do
+  def play(player_type, _space, game_id) do
     previous_state = GameStore.retrieve(game_id)
     run_turn(previous_state, get_opponent_move(player_type, previous_state), game_id)
   end
