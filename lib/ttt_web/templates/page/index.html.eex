@@ -1,16 +1,18 @@
 <h3>What kind of game would you like to play?</h3>
 
 <form action="/game">
-  <input type="hidden" name="player_type" value="Human">
-  <input type="submit" value="Player Vs. Player">
-</form>
+  <select name="current_player_type">
+    <option value="Human">Human</option>
+    <option value="SimpleComputer">Simple Computer</option>
+    <option value="SmartComputer">Smart Computer</option>
+  </select>
 
-<form action="/game">
-  <input type="hidden" name="player_type" value="SimpleComputer">
-  <input type="submit" value="Player Vs. Simple Computer">
-</form>
+  VS.
 
-<form action="/game">
-  <input type="hidden" name="player_type" value="SmartComputer">
-  <input type="submit" value="Player Vs. Smart Computer">
+  <select name="next_player_type">
+      <option value="Human">Human</option>
+      <option value="SimpleComputer">Simple Computer</option>
+      <option value="SmartComputer">Smart Computer</option>
+    </select>
+  <input type="submit" value="Play!">
 </form>

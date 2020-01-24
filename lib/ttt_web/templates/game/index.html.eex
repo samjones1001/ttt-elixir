@@ -19,7 +19,7 @@
 <form id="play_turn_form">
   <input type="hidden" name="move" id="move_input">
   <input type="hidden" name="game_id" value=<%= @game_id %>>
-  <input type="hidden" name="player_type" value=<%= @player_type %>>
+  <input type="hidden" name="current_player_type" value=<%= @player_type %>>
 </form>
 
 <%= if @message do %>
@@ -27,9 +27,7 @@
 <% end %>
 
 <%= if @player_type != "Human" and !@game_over do %>
-  <form id="computer_play_turn_form">
-    <input type="hidden" name="game_id" value=<%= @game_id %>>
-    <input type="hidden" name="player_type" value=<%= @player_type %>>
-    <input type="submit" value="Opponent Turn">
-  </form>
+  <script>
+    setTimeout(function() { Ttt.submitForm() }, 1000)
+  </script>
 <% end %>

@@ -4,24 +4,27 @@ defmodule Ttt.Game do
   alias Ttt.SimpleComputerPlayer
   alias Ttt.SmartComputerPlayer
 
-  def play(opponent_type, _space=nil, _game_id=nil) do
+  def play(options, _game_id=nil) do
     board = Board.create()
-    first_player_type = "Human"
-    game_id = GameStore.start(%{board: board, current_player: %{type: first_player_type, marker: "X"}, next_player: %{type: opponent_type, marker: "O"}, error: false})
-    %{board: board, game_id: elem(game_id, 1), player_type: first_player_type}
+    current_player = %{type: options.current_player_type, marker: "X"}
+    next_player = %{type: options.next_player_type, marker: "O"}
+
+    game_id = GameStore.start(%{board: board, current_player: current_player, next_player: next_player})
+    %{board: board, game_id: elem(game_id, 1), current_player_type: current_player.type}
   end
 
-  def play(_player_type="Human", space, game_id) do
+  def play(options = %{current_player_type: "Human"}, game_id) do
     previous_state = GameStore.retrieve(game_id)
+    space = options.move
 
     if Board.is_available_space?(previous_state.board, space),
        do: run_turn(previous_state, space, game_id),
        else: set_error_message(previous_state, game_id)
   end
 
-  def play(player_type, _space, game_id) do
+  def play(options, game_id) do
     previous_state = GameStore.retrieve(game_id)
-    run_turn(previous_state, get_opponent_move(player_type, previous_state), game_id)
+    run_turn(previous_state, get_opponent_move(options.current_player_type, previous_state), game_id)
   end
 
   defp run_turn(previous_state, space, game_id) do
@@ -29,7 +32,7 @@ defmodule Ttt.Game do
     game_status = evaluate_turn_end_status(new_board, previous_state, space)
     update_game_store(%{board: new_board, current_player: previous_state.next_player, next_player: previous_state.current_player, game_id: game_id})
 
-    %{board: new_board, game_id: game_id, player_type: previous_state.next_player.type, game_over: game_status.game_over, message: game_status.message, error: false}
+    %{board: new_board, game_id: game_id, current_player_type: previous_state.next_player.type, game_over: game_status.game_over, message: game_status.message, error: false}
   end
 
   defp place_marker(state, space) do
