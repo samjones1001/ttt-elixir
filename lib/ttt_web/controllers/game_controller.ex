@@ -4,13 +4,20 @@ defmodule TttWeb.GameController do
   alias Ttt.Game
 
   def index(conn, params) do
-    game = Game.play(Map.get(params, "opponent"), Map.get(params, "move"), game_id_to_pid(Map.get(params, "game_id")))
+    game_id = game_id_to_pid(Map.get(params, "game_id"))
+    game = Game.play(to_atom_map(params), game_id)
+
     render(conn, "index.html",
       board: Map.get(game, :board),
       game_id: game_id_to_string(Map.get(game, :game_id)),
       game_over: Map.get(game, :game_over),
-      message: Map.get(game, :message)
+      message: Map.get(game, :message),
+      player_type: Map.get(game, :current_player_type)
     )
+  end
+
+  defp to_atom_map(string_map) do
+    Map.new(string_map, fn {k, v} -> {String.to_existing_atom(k), v} end)
   end
 
   defp game_id_to_string(game_id) do
