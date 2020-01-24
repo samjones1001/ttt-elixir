@@ -17,7 +17,7 @@ defmodule TttWeb.GameController do
   end
 
   defp to_atom_map(string_map) do
-    Map.new(string_map, fn {k, v} -> {String.to_atom(k), v} end)
+    Map.new(string_map, fn {k, v} -> {String.to_existing_atom(k), v} end)
   end
 
   defp game_id_to_string(game_id) do

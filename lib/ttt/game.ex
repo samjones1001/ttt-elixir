@@ -32,7 +32,7 @@ defmodule Ttt.Game do
     game_status = evaluate_turn_end_status(new_board, previous_state, space)
     update_game_store(%{board: new_board, current_player: previous_state.next_player, next_player: previous_state.current_player, game_id: game_id})
 
-    %{board: new_board, game_id: game_id, current_player_type: previous_state.next_player.type, game_over: game_status.game_over, message: game_status.message, error: false}
+    %{board: new_board, game_id: game_id, current_player_type: previous_state.next_player.type, game_over: game_status.game_over, message: game_status.message}
   end
 
   defp place_marker(state, space) do

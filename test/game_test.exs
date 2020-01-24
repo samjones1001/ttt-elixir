@@ -53,6 +53,14 @@ defmodule GameTest do
 
       assert game_state.message == "X's turn. O took space 2"
     end
+
+    test "board updates correctly on a computer player's turn" do
+      initial_board_state = ["1","2","3","4","5","6","7","8","9"]
+      game_id = start_game(initial_board_state, %{type: "SimpleComputer", marker: "O"}, %{type: "Human", marker: "X"})
+      game_state = Game.play(%{current_player_type: "SimpleComputer"}, elem(game_id, 1))
+
+      assert game_state.board != initial_board_state
+    end
   end
 
   describe "game over" do
