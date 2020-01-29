@@ -1,18 +1,23 @@
+<%= @player_type %>
+
 <table>
+  <svg height="160" width="160" id="leftRightDiagonalLine" display="none">
+    <line x1="6" y1="6" x2="210" y2="210" style="stroke:rgb(255,0,0);stroke-width:2" />
+  </svg>
   <tr>
-     <td onClick="Ttt.registerClick(1, <%= @game_over %>)"><%= Enum.at(@board, 0) %></td>
-     <td onClick="Ttt.registerClick(2, <%= @game_over %>)"><%= Enum.at(@board, 1) %></td>
-     <td onClick="Ttt.registerClick(3, <%= @game_over %>)"><%= Enum.at(@board, 2) %></td>
+    <td onClick="Ttt.registerClick(1, <%= @game_over %>)"><%= Enum.at(@board, 0) %></td>
+    <td onClick="Ttt.registerClick(2, <%= @game_over %>)"><%= Enum.at(@board, 1) %></td>
+    <td onClick="Ttt.registerClick(3, <%= @game_over %>)"><%= Enum.at(@board, 2) %></td>
   </tr>
   <tr>
-     <td onClick="Ttt.registerClick(4, <%= @game_over %>)"><%= Enum.at(@board, 3) %></td>
-     <td onClick="Ttt.registerClick(5, <%= @game_over %>)"><%= Enum.at(@board, 4) %></td>
-     <td onClick="Ttt.registerClick(6, <%= @game_over %>)"><%= Enum.at(@board, 5) %></td>
+    <td onClick="Ttt.registerClick(4, <%= @game_over %>)"><%= Enum.at(@board, 3) %></td>
+    <td onClick="Ttt.registerClick(5, <%= @game_over %>)"><%= Enum.at(@board, 4) %></td>
+    <td onClick="Ttt.registerClick(6, <%= @game_over %>)"><%= Enum.at(@board, 5) %></td>
   </tr>
   <tr>
-     <td onClick="Ttt.registerClick(7, <%= @game_over %>)"><%= Enum.at(@board, 6) %></td>
-     <td onClick="Ttt.registerClick(8, <%= @game_over %>)"><%= Enum.at(@board, 7) %></td>
-     <td onClick="Ttt.registerClick(9, <%= @game_over %>)"><%= Enum.at(@board, 8) %></td>
+    <td onClick="Ttt.registerClick(7, <%= @game_over %>)"><%= Enum.at(@board, 6) %></td>
+    <td onClick="Ttt.registerClick(8, <%= @game_over %>)"><%= Enum.at(@board, 7) %></td>
+    <td onClick="Ttt.registerClick(9, <%= @game_over %>)"><%= Enum.at(@board, 8) %></td>
   </tr>
 </table>
 
@@ -22,12 +27,15 @@
   <input type="hidden" name="current_player_type" value=<%= @player_type %>>
 </form>
 
-<%= if @message do %>
-  <div><%= @message %></div>
-<% end %>
+<div id="messageArea">
+  <%= if @message do %>
+    <div><%= @message %></div>
+  <% end %>
+</div>
 
 <%= if @player_type != "Human" and !@game_over do %>
   <script>
     setTimeout(function() { Ttt.submitForm() }, 1000)
   </script>
 <% end %>
+

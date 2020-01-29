@@ -1,6 +1,24 @@
 td {
-    border: 1px solid black;
-    height: 50px;
-    width: 50px;
-    text-align: center;
+  border: 1px solid black;
+  height: 50px;
+  width: 50px;
+  text-align: center;
 }
+
+#gameArea {
+  position: relative;
+}
+
+#messageArea {
+  position: relative;
+}
+
+
+
+#leftRightDiagonalLine {
+  position: absolute;
+  z-index: -100;
+}
+
+
+

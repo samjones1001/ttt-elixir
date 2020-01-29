@@ -61,7 +61,7 @@ defmodule Ttt.Game do
   end
 
   defp set_error_message(state, game_id) do
-    Map.merge(state, %{message: "Please select an available space", error: true, game_id: game_id})
+    %{board: state.board, game_id: game_id, current_player_type: state.current_player.type, game_over: false, message: "Please select an available space"}
   end
 
   defp update_game_store(state) do
