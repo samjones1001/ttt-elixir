@@ -5,19 +5,8 @@ td {
   text-align: center;
 }
 
-#gameArea {
-  position: relative;
-}
-
-#messageArea {
-  position: relative;
-}
-
-
-
-#leftRightDiagonalLine {
+#svgLine {
   position: absolute;
-  z-index: -100;
 }
 
 

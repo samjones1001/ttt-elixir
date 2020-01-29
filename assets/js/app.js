@@ -28,9 +28,14 @@ window.Ttt = (function() {
     document.getElementById("play_turn_form").submit()
   }
 
+  let drawLine = function() {
+    document.getElementById("svgLine").style.display = "block"
+  }
+
   return {
     registerClick,
-    submitForm
+    submitForm,
+    drawLine
   }
 })();
 
