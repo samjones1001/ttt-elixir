@@ -1,18 +1,21 @@
 <table>
+  <svg height="165" width="165" id="svgLine" display="none">
+    <path id="line" style="stroke:rgb(255,0,0);stroke-width:4" />
+  </svg>
   <tr>
-     <td onClick="Ttt.registerClick(1, <%= @game_over %>)"><%= Enum.at(@board, 0) %></td>
-     <td onClick="Ttt.registerClick(2, <%= @game_over %>)"><%= Enum.at(@board, 1) %></td>
-     <td onClick="Ttt.registerClick(3, <%= @game_over %>)"><%= Enum.at(@board, 2) %></td>
+    <td onClick="Ttt.registerClick(1, <%= @game_over %>)"><%= Enum.at(@board, 0) %></td>
+    <td onClick="Ttt.registerClick(2, <%= @game_over %>)"><%= Enum.at(@board, 1) %></td>
+    <td onClick="Ttt.registerClick(3, <%= @game_over %>)"><%= Enum.at(@board, 2) %></td>
   </tr>
   <tr>
-     <td onClick="Ttt.registerClick(4, <%= @game_over %>)"><%= Enum.at(@board, 3) %></td>
-     <td onClick="Ttt.registerClick(5, <%= @game_over %>)"><%= Enum.at(@board, 4) %></td>
-     <td onClick="Ttt.registerClick(6, <%= @game_over %>)"><%= Enum.at(@board, 5) %></td>
+    <td onClick="Ttt.registerClick(4, <%= @game_over %>)"><%= Enum.at(@board, 3) %></td>
+    <td onClick="Ttt.registerClick(5, <%= @game_over %>)"><%= Enum.at(@board, 4) %></td>
+    <td onClick="Ttt.registerClick(6, <%= @game_over %>)"><%= Enum.at(@board, 5) %></td>
   </tr>
   <tr>
-     <td onClick="Ttt.registerClick(7, <%= @game_over %>)"><%= Enum.at(@board, 6) %></td>
-     <td onClick="Ttt.registerClick(8, <%= @game_over %>)"><%= Enum.at(@board, 7) %></td>
-     <td onClick="Ttt.registerClick(9, <%= @game_over %>)"><%= Enum.at(@board, 8) %></td>
+    <td onClick="Ttt.registerClick(7, <%= @game_over %>)"><%= Enum.at(@board, 6) %></td>
+    <td onClick="Ttt.registerClick(8, <%= @game_over %>)"><%= Enum.at(@board, 7) %></td>
+    <td onClick="Ttt.registerClick(9, <%= @game_over %>)"><%= Enum.at(@board, 8) %></td>
   </tr>
 </table>
 
@@ -31,3 +34,10 @@
     setTimeout(function() { Ttt.submitForm() }, 1000)
   </script>
 <% end %>
+
+<%= if @game_over do %>
+  <script>
+    Ttt.drawLine("<%= Enum.join(@winning_indices, ",") %>")
+  </script>
+<% end %>
+

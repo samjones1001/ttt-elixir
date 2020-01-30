@@ -12,7 +12,8 @@ defmodule TttWeb.GameController do
       game_id: game_id_to_string(Map.get(game, :game_id)),
       game_over: Map.get(game, :game_over),
       message: Map.get(game, :message),
-      player_type: Map.get(game, :current_player_type)
+      player_type: Map.get(game, :current_player_type),
+      winning_indices: Map.get(game, :winning_indices)
     )
   end
 
