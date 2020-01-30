@@ -73,5 +73,15 @@ defmodule BoardTest do
       board = ["X", "2", "3", "4", "X", "6", "7", "8", "X"]
       assert Board.is_won?(board, current_player) == true
     end
+
+    test "returns an empty array if no winning line present" do
+      board = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+      assert Board.winning_indices(board, "X") == []
+    end
+
+    test "returns an array of indices of a winning line if present" do
+      board = ["X", "X", "X", "4", "5", "6", "7", "8", "9"]
+      assert Board.winning_indices(board, "X") == [0,1,2]
+    end
   end
 end

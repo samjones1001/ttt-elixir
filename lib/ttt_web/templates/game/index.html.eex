@@ -1,6 +1,6 @@
 <table>
   <svg height="165" width="165" id="svgLine" display="none">
-    <line x1="6" y1="6" x2="160" y2="158" style="stroke:rgb(255,0,0);stroke-width:2" />
+    <path id="line" style="stroke:rgb(255,0,0);stroke-width:4" />
   </svg>
   <tr>
     <td onClick="Ttt.registerClick(1, <%= @game_over %>)"><%= Enum.at(@board, 0) %></td>
@@ -25,11 +25,9 @@
   <input type="hidden" name="current_player_type" value=<%= @player_type %>>
 </form>
 
-<div id="messageArea">
-  <%= if @message do %>
-    <div><%= @message %></div>
-  <% end %>
-</div>
+<%= if @message do %>
+  <div><%= @message %></div>
+<% end %>
 
 <%= if @player_type != "Human" and !@game_over do %>
   <script>
@@ -39,7 +37,7 @@
 
 <%= if @game_over do %>
   <script>
-    Ttt.drawLine()
+    Ttt.drawLine("<%= Enum.join(@winning_indices, ",") %>")
   </script>
 <% end %>
 
