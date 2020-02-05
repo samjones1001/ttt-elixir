@@ -32,7 +32,7 @@ defmodule Ttt.Game do
     game_status = evaluate_turn_end_status(new_board, previous_state, space)
     update_game_store(%{board: new_board, current_player: previous_state.next_player, next_player: previous_state.current_player, game_id: game_id})
 
-    %{board: new_board, game_id: game_id, current_player_type: previous_state.next_player.type, game_over: game_status.game_over, message: game_status.message}
+    %{board: new_board, game_id: game_id, current_player_type: previous_state.next_player.type, game_over: game_status.game_over, message: game_status.message, winning_indices: Map.get(game_status, :winning_indices)}
   end
 
   defp place_marker(state, space) do
@@ -43,7 +43,7 @@ defmodule Ttt.Game do
     current_player = game_state.current_player.marker
 
     case is_game_over?(board, current_player) do
-      true -> %{game_over: true, message: build_game_over_message(board, current_player)}
+      true -> %{game_over: true, message: build_game_over_message(board, current_player), winning_indices: Board.winning_indices(board, current_player)}
       false -> %{game_over: false, message: build_turn_end_message(game_state, space)}
     end
   end
@@ -61,7 +61,7 @@ defmodule Ttt.Game do
   end
 
   defp set_error_message(state, game_id) do
-    Map.merge(state, %{message: "Please select an available space", error: true, game_id: game_id})
+    %{board: state.board, game_id: game_id, current_player_type: state.current_player.type, game_over: false, message: "Please select an available space"}
   end
 
   defp update_game_store(state) do
